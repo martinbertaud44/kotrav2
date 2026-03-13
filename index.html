@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotra — Kochako Tranui</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3a6e">
+<style>
+body{
+  margin:0;
+  font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background:linear-gradient(135deg,#05101f,#0a1e3d);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+.card{
+  backdrop-filter: blur(10px);
+  background:rgba(255,255,255,0.06);
+  padding:35px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.45);
+}
+button{
+  margin-top:20px;
+  padding:12px 18px;
+  border-radius:10px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  background:#2f80f5;
+  color:white;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h1>🚄 Kotra</h1>
+<p>Application ferroviaire du Kochako</p>
+<button id="installBtn" style="display:none;">Installer l'application</button>
+</div>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
+
+let deferredPrompt;
+const btn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  btn.style.display = "inline-block";
+});
+
+btn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  btn.style.display = "none";
+});
+</script>
+
+</body>
+</html>
